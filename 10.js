@@ -1,3 +1,5 @@
+import { log } from 'util';
+
 
 // 自己写一个require函数
 'use strict';
