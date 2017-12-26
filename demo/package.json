@@ -1,13 +1,19 @@
 {
   "name": "demo",
   "version": "1.0.0",
-  "description": "",
   "main": "01.js",
-  "dependencies": {},
+  "dependencies": {
+    "browser-sync": "^2.21.0",
+    "marked": "^0.3.9"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "directories": {
+    "lib": "lib"
+  },
+  "description": ""
 }
