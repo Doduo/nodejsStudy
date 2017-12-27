@@ -11,20 +11,30 @@ rl.question('What is your name? ', (name) => {
     throw new Error('没名字还出来混。。');
   }
   // 创建于服务端的连接
-  // host: '192.168.1.22'  主机地址  本地的可以不用写
-
   var server = net.connect({ port: 2080, host: '192.168.1.22' }, () => {
+
+    // 登入操作
+    var user = {
+      procotol: 'signin',
+      username: name
+    }
+    server.write(JSON.stringify(user));
 
     console.log(`Welcome ${name} to 2080 chatroom`);
 
     // 监听服务端发过来的数据
     server.on('data', (chunk) => {
       try {
+        // {"procotol":"p2p","from":"张三","to":"李四","message":"弄啥咧！"}
         var signal = JSON.parse(chunk.toString().trim());
         var procotol = signal.procotol;
         switch (procotol) {
           case 'boardcast':
             console.log('\nboardcast[' + signal.from + ']> ' + signal.message + '\n');
+            rl.prompt();
+            break;
+          case 'p2p':
+            console.log('\np2p[' + signal.from + ']> ' + signal.message + '\n');
             rl.prompt();
             break;
           default:
@@ -42,16 +52,28 @@ rl.question('What is your name? ', (name) => {
 
     // 输入一行内容敲回车    
     rl.on('line', (line) => {
-
-      // {"procotol":"boardcast","from":"张三","message":"弄啥咧！"}
-      var send = {
-        procotol: 'boardcast',
-        from: name,
-        message: line.toString().trim()
-      };
-
+      // line user2:sjkdasdkasjkd
+      line = line.toString().trim();
+      var temp = line.split(':');
+      var send;
+      if (temp.length === 2) {
+        // 点对点
+        send = {
+          procotol: 'p2p',
+          from: name,
+          to: temp[0],
+          message: temp[1]
+        };
+      } else {
+        // 广播消息
+        send = {
+          procotol: 'boardcast',
+          from: name,
+          message: line
+        };
+      }
+      // chunk：{"procotol":"p2p","from":"张三","to":"李四","message":"弄啥咧！"}
       server.write(JSON.stringify(send));
-
       rl.prompt();
 
     });
