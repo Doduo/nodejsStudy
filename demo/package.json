@@ -4,6 +4,7 @@
   "main": "01.js",
   "dependencies": {
     "browser-sync": "^2.21.0",
+    "iconv-lite": "^0.4.19",
     "marked": "^0.3.9"
   },
   "devDependencies": {},
